@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+  Device Model for Intel Agilex F-Series AGFB014R24B2E2V
+  Used by oneAPI compiler for resource estimation and timing analysis
+  
+  This is the DE10-Agilex FPGA (same die as AGFB014R24A3E3VR0, different speed grade)
+  Part: AGFB014R24B2E2V
+    - AGFB = Agilex F-Series (Base fabric variant)
+    - 014 = Device density (014 = ~1.4M LEs)
+    - R24 = Package (R-series 24x24mm BGA)
+    - B2 = Speed grade (B2 = -2 speed, industrial temp)
+    - E2 = Transceiver grade (E2 = E-Tile capable)
+    - V = RoHS compliant lead-free
+-->
+<device_model version="0.9" target_model="agilex7_tm.xml">
+  
+  <!-- Target frequency range for timing analysis -->
+  <fmax expected="480" min="95" high="175"/>
+  
+  <!-- Available device resources (from Quartus device database) -->
+  <resources>
+    <!-- Adaptive Logic Modules -->
+    <alms num="487200"/>
+    <!-- Flip-flops (4 per ALM) -->
+    <ffs num="1948800"/>
+    <!-- Variable-precision DSP blocks -->
+    <dsps num="4510"/>
+    <!-- M20K memory blocks -->
+    <rams num="7110"/>
+    <!-- MLAB (memory LAB) blocks -->
+    <mlabs num="24360"/>
+  </resources>
+  
+</device_model>
