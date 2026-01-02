@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!--
+  DE10 Agilex oneAPI ASP Hardware Specification - IO Pipes Variant
+  - 4 DDR4 channels (A/B/C/D), 8 GiB each, 32 GiB total
+  - PCIe Gen4 x16 P-Tile
+  - HSSI/IO Pipes: 8x 25GbE channels via QSFP-DD Port A (E-Tile)
+  - Based on n6001 iopipes variant adapted for DE10 Agilex
+-->
+<board version="24.1" name="ofs_de10_agilex_iopipes">
+
+  <!-- Compile flow definitions -->
+  <compile name="afu_flat" project="ofs_top" revision="ofs_pr_afu" qsys_file="none" generic_kernel="1">
+    <generate cmd="echo"/>
+    <synthesize cmd="quartus_sh -t build/scripts/entry.tcl afu_flat"/>
+    <auto_migrate platform_type="none">
+      <include fixes=""/>
+      <exclude fixes=""/>
+    </auto_migrate>
+  </compile>
+  
+  <compile name="afu_flat_kclk" project="ofs_top" revision="ofs_pr_afu" qsys_file="none" generic_kernel="1">
+    <generate cmd="echo"/>
+    <synthesize cmd="quartus_sh -t build/scripts/entry.tcl afu_flat_kclk"/>
+    <auto_migrate platform_type="none">
+      <include fixes=""/>
+      <exclude fixes=""/>
+    </auto_migrate>
+  </compile>
+
+  <!-- Device model - DE10 Agilex AGFB014R24B2E2V -->
+  <device device_model="agfb014r24b2e2v_dm.xml">
+    <used_resources>
+      <alms num="350000"/>
+      <ffs num="1300000"/>
+      <dsps num="2280"/>
+      <rams num="4100"/>
+    </used_resources>
+  </device>
+
+  <!-- 
+    DDR4 Memory Configuration
+    4 channels x 8 GiB = 32 GiB total
+    DDR4-2666, 512-bit interface, 72-bit with ECC
+    max_bandwidth = 2666 MHz * 2 (DDR) * 64 bytes * 4 channels / 8 = 85312 MB/s
+  -->
+  <global_mem name="DDR" max_bandwidth="85312" interleaved_bytes="4096" config_addr="0x018">
+    <interface name="board" port="kernel_ddr4a" type="agent" width="512" 
+               maxburst="16" address="0x000000000" size="0x200000000" 
+               latency="1500" waitrequest_allowance="6" bsp_avmm_write_ack="1"/>
+    <interface name="board" port="kernel_ddr4b" type="agent" width="512" 
+               maxburst="16" address="0x200000000" size="0x200000000" 
+               latency="1500" waitrequest_allowance="6" bsp_avmm_write_ack="1"/>
+    <interface name="board" port="kernel_ddr4c" type="agent" width="512" 
+               maxburst="16" address="0x400000000" size="0x200000000" 
+               latency="1500" waitrequest_allowance="6" bsp_avmm_write_ack="1"/>
+    <interface name="board" port="kernel_ddr4d" type="agent" width="512" 
+               maxburst="16" address="0x600000000" size="0x200000000" 
+               latency="1500" waitrequest_allowance="6" bsp_avmm_write_ack="1"/>
+  </global_mem>
+    
+  <!-- Host configuration -->
+  <host>
+    <kernel_config start="0x00000000" size="0x0100000"/>
+  </host>
+
+  <!-- Kernel interfaces -->
+  <interfaces>
+    <interface name="board" port="kernel_cra" type="host" width="64" misc="0" waitrequest_allowance="5"/>
+    <interface name="board" port="kernel_irq" type="irq" width="1"/>
+    <kernel_clk_reset clk="board.kernel_clk" clk2x="board.kernel_clk2x" reset="board.kernel_reset"/>
+  </interfaces>
+
+  <!--
+    IO Pipes / HSSI Channels
+    DE10 Agilex has 8x 25GbE channels via QSFP-DD Port A (E-Tile)
+    Each channel provides bidirectional streaming I/O to/from kernel
+  -->
+  <channels>
+    <!-- HSSI Port 0 -->
+    <interface name="board" port="udp_out"   type="streamsink"   width="64" chan_id="udp_out"/>
+    <interface name="board" port="udp_in"    type="streamsource" width="64" chan_id="udp_in"/>
+    <!-- HSSI Port 1 -->
+    <interface name="board" port="udp_out_1" type="streamsink"   width="64" chan_id="udp_out_1"/>
+    <interface name="board" port="udp_in_1"  type="streamsource" width="64" chan_id="udp_in_1"/>
+    <!-- HSSI Port 2 -->
+    <interface name="board" port="udp_out_2" type="streamsink"   width="64" chan_id="udp_out_2"/>
+    <interface name="board" port="udp_in_2"  type="streamsource" width="64" chan_id="udp_in_2"/>
+    <!-- HSSI Port 3 -->
+    <interface name="board" port="udp_out_3" type="streamsink"   width="64" chan_id="udp_out_3"/>
+    <interface name="board" port="udp_in_3"  type="streamsource" width="64" chan_id="udp_in_3"/>
+    <!-- HSSI Port 4 -->
+    <interface name="board" port="udp_out_4" type="streamsink"   width="64" chan_id="udp_out_4"/>
+    <interface name="board" port="udp_in_4"  type="streamsource" width="64" chan_id="udp_in_4"/>
+    <!-- HSSI Port 5 -->
+    <interface name="board" port="udp_out_5" type="streamsink"   width="64" chan_id="udp_out_5"/>
+    <interface name="board" port="udp_in_5"  type="streamsource" width="64" chan_id="udp_in_5"/>
+    <!-- HSSI Port 6 -->
+    <interface name="board" port="udp_out_6" type="streamsink"   width="64" chan_id="udp_out_6"/>
+    <interface name="board" port="udp_in_6"  type="streamsource" width="64" chan_id="udp_in_6"/>
+    <!-- HSSI Port 7 -->
+    <interface name="board" port="udp_out_7" type="streamsink"   width="64" chan_id="udp_out_7"/>
+    <interface name="board" port="udp_in_7"  type="streamsource" width="64" chan_id="udp_in_7"/>
+  </channels>
+</board>

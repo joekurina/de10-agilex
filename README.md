@@ -7,8 +7,17 @@ oneAPI Accelerator Support Package for DE10 Agilex development kit, based on OFS
 - **Device:** Intel Agilex AGFB014R24B2E2V
 - **PCIe:** Gen4 x16 via P-Tile (hardware supports Gen4; OPAE driver enables it)
 - **Memory:** 4× DDR4-2666 channels, 8 GiB each (32 GiB total)
-- **HSSI:** Available via E-Tile to QSFP-DD (not enabled for initial bring-up)
+- **HSSI:** 8x 25GbE via E-Tile to QSFP-DD Port A (available with iopipes variants)
 - **oneAPI:** SYCL/DPC++ kernel acceleration
+
+## Board Variants
+
+| Variant | Description |
+|---------|-------------|
+| `ofs_de10_agilex` | Base DMA-based ASP with local memory (DDR4) |
+| `ofs_de10_agilex_usm` | Adds USM (Unified Shared Memory) for SYCL malloc_shared()/malloc_host() |
+| `ofs_de10_agilex_iopipes` | Adds HSSI/IO Pipes for 8x 25GbE networking |
+| `ofs_de10_agilex_usm_iopipes` | Full-featured: USM + IO Pipes for networking + shared memory |
 
 ## Directory Structure
 
@@ -16,13 +25,11 @@ oneAPI Accelerator Support Package for DE10 Agilex development kit, based on OFS
 de10-agilex/
 ├── board_env.xml              # Board environment descriptor
 ├── hardware/
-│   └── ofs_de10_agilex/
-│       ├── board_spec.xml     # Hardware specification for compiler
-│       └── build/
-│           ├── parameters.tcl  # Build parameters
-│           ├── rtl/
-│           │   └── ofs_asp.vh  # RTL configuration
-│           └── scripts/        # Build scripts
+│   ├── common/                # Shared RTL and scripts
+│   ├── ofs_de10_agilex/       # Base variant
+│   ├── ofs_de10_agilex_usm/   # USM variant
+│   ├── ofs_de10_agilex_iopipes/      # IO Pipes variant
+│   └── ofs_de10_agilex_usm_iopipes/  # USM + IO Pipes variant
 ├── scripts/
 │   └── build-asp.sh           # Main build script
 └── README.md                  # This file
@@ -70,28 +77,6 @@ export ONEAPI_ASP=<path-to>/oneapi-asp/de10-agilex
 aoc -list-boards
 ```
 
-## Compiling Kernels
-
-### SYCL/DPC++ Example
-
-```bash
-# Compile a SYCL kernel
-icpx -fsycl -fintelfpga -Xshardware -Xsboard=ofs_de10_agilex vector_add.cpp -o vector_add.fpga
-
-# Run on device
-./vector_add.fpga
-```
-
-### OpenCL Example
-
-```bash
-# Compile an OpenCL kernel
-aoc -board=ofs_de10_agilex kernel.cl -o kernel.aocx
-
-# Run host application
-./host kernel.aocx
-```
-
 ## Memory Map
 
 | Bank | Port | Base Address | Size | Description |
@@ -130,9 +115,9 @@ aoc -fmax=350 -high-effort kernel.cl
 
 ## Known Limitations
 
-1. HSSI/Ethernet not enabled for initial bring-up (hardware is present)
+1. IO Pipes require FIM rebuilt with HSSI enabled (`INCLUDE_HSSI=1`)
 2. No HPS integration (not present on this device variant)
-3. USM (Unified Shared Memory) disabled for initial bring-up
+3. QSFP-DD Port B not enabled (Port A provides 8× 25GbE)
 
 ## References
 
