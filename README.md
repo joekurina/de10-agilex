@@ -7,7 +7,6 @@ oneAPI Accelerator Support Package for DE10 Agilex development kit, based on OFS
 - **Device:** Intel Agilex AGFB014R24B2E2V
 - **PCIe:** Gen4 x16 via P-Tile (hardware supports Gen4; OPAE driver enables it)
 - **Memory:** 4× DDR4-2666 channels, 8 GiB each (32 GiB total)
-- **HSSI:** 8x 25GbE via E-Tile to QSFP-DD Port A (available with iopipes variants)
 - **oneAPI:** SYCL/DPC++ kernel acceleration
 
 ## Board Variants
@@ -16,8 +15,6 @@ oneAPI Accelerator Support Package for DE10 Agilex development kit, based on OFS
 |---------|-------------|
 | `ofs_de10_agilex` | Base DMA-based ASP with local memory (DDR4) |
 | `ofs_de10_agilex_usm` | Adds USM (Unified Shared Memory) for SYCL malloc_shared()/malloc_host() |
-| `ofs_de10_agilex_iopipes` | Adds HSSI/IO Pipes for 8x 25GbE networking |
-| `ofs_de10_agilex_usm_iopipes` | Full-featured: USM + IO Pipes for networking + shared memory |
 
 ## Directory Structure
 
@@ -27,9 +24,8 @@ de10-agilex/
 ├── hardware/
 │   ├── common/                # Shared RTL and scripts
 │   ├── ofs_de10_agilex/       # Base variant
-│   ├── ofs_de10_agilex_usm/   # USM variant
-│   ├── ofs_de10_agilex_iopipes/      # IO Pipes variant
-│   └── ofs_de10_agilex_usm_iopipes/  # USM + IO Pipes variant
+│   └── ofs_de10_agilex_usm/   # USM variant
+
 ├── scripts/
 │   └── build-asp.sh           # Main build script
 └── README.md                  # This file
